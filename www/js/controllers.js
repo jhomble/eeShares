@@ -985,6 +985,7 @@ function ($scope, $stateParams, campaignService, userService, $ionicModal, $cord
     
     $scope.campaignID = $stateParams.campaignID
     $scope.userID = $stateParams.userID
+
     
     $scope.updatePictures = function() {
         $scope.pictures = [];
@@ -1155,13 +1156,13 @@ function ($scope, $stateParams, buildingService, campaignService, userService, $
         // Get the ID for the campaign, and the user
         $scope.campaignID = $stateParams.campaignID;
         $scope.userID = $stateParams.userID;
-
         // Get the campaigns info on the user
         $scope.campaignUser = campaignService.getCampaignUser($scope.campaignID, $scope.userID)
         // Array of the points for each prize - firebase alphabetizes them so it should match campaign ordering
-        var userPoints = []
+        var userPoints = [];
         $scope.campaignUser.$loaded()
         .then(function(user){
+
             // Get the point distribution for the user
             userPoints = $.map(user[1], function(value, index) {
                 return [value];
@@ -1169,8 +1170,22 @@ function ($scope, $stateParams, buildingService, campaignService, userService, $
             // Take off the id and priority
             userPoints.pop()
             userPoints.pop()
-            $scope.score = $scope.campaignUser[2].$value
         })
+            console.log("ID: ", $scope.campaignID, $scope.userID);
+            var test = campaignService.getCampaignUserScore($scope.campaignID, $scope.userID);
+            test.$loaded().then(function() {
+                $scope.score = test.$value;
+                console.log("TEST: ", test);
+            })
+
+            // var userInfo2 = campaignService.getCampaignUser($scope.campaignID, $scope.userID);
+            // var rec = userInfo2.$keyAt(0);
+            // console.log("score:", rec);
+
+           // $scope.scoreUser = campaignService.getCampaignUserScore($scope.campaignID, $scope.userID)
+           //  $scope.scoreUser.then(function(snapshot) {
+           //      $scope.score = snapshot.val().score;
+            // })
 
         // Get the prize list of the campaigns and create the object array of prizes to repeated on 
         $scope.prizes = campaignService.getPrizes($scope.campaignID);

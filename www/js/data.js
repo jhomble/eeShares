@@ -153,9 +153,12 @@ angular.module('data', ['firebase'])
             getCampaignUser: function(id, uid){
                 return $firebaseArray(refDatabase.child('campaigns').child(id).child("users").child(uid))
             }, 
+            getCampaignUserScore: function(id,uid){
+                return $firebaseObject(refDatabase.child('campaigns').child(id).child("users").child(uid).child("score"))
+            },
             savePrizes: function(id, uid, prizes){
                 var prize = $firebaseArray(refDatabase.child('campaigns').child(id).child("users").child(uid).child('prizes'))
-                .update({
+                .$save({
                     prizes
                 })
             },

@@ -117,8 +117,8 @@ angular.module('app.routes', [])
     .state('tabsController.cambridgePrize', {
     url: '/cambridgePrize',
 	params: {
-		campaignID: "0",
-		userID: "0"		
+    campaignID: "-KV25NS7A1hb7QlDd8LD",
+    userID: "-KkwjhORRlCEBJwq_Xg1"	
 },
     views: {
       'tab2': {
