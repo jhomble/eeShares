@@ -72,6 +72,7 @@ angular.module('data', ['firebase'])
                     'owner': uid
                 })
             },
+            
             getCampaign: function (id) {
                 return refDatabase.child('campaigns').child(id).once('value')
             },
@@ -80,23 +81,17 @@ angular.module('data', ['firebase'])
                 var tasksFB = $firebaseObject(refDatabase.child('campaigns').child(campaignID).child('tasks'))
                 tasksFB.$loaded().then(function (tasks) {
                     var user = $firebaseArray(refDatabase.child('campaigns').child(campaignID).child('users'))
-<<<<<<< HEAD
-
                     //Getting the list of prizes from this campaign - TW
                     var prizes = $firebaseArray(refDatabase.child('campaigns').child(campaignID).child('prizes'))
-
                     /*Looping through the prizes that we are about to add to the users data and add a points field. This field is 
                     synched with our database below when we call user.$add and add the data to the current user we are adding to the campaign.
                     this field is used to keep track of how many points a user has. - TW*/
                     prizes.$loaded().then(function () {
-
                         angular.forEach(prizes, function (prize) {
                             console.log("Prize: " + prize.name)
                             prize.points = 0
                         })
                     })
-
-
                     //Fixed Bug - Once the prizes has been loaded we then add those prizes to the users data as prizes along with the other fields we need to add to each user - TW
                     prizes.$loaded().then(function () {
                         //adding the data to the user
@@ -107,26 +102,9 @@ angular.module('data', ['firebase'])
                             prizes
                         })
                     })
-=======
-                    //Getting the list of prizes from this campaign - TW
-                   var prizes =  $firebaseArray(refDatabase.child('campaigns').child(campaignID).child('prizes'))
-                   
-                    //Fixed Bug - Once the prizes has been loaded we then add those prizes to the users data as prizes along with the other fields we need to add to each user - TW
-                      prizes.$loaded().then(function(){
-                         //adding the data to the user
-                         user.$add({
-                        'score': 0,
-                        'daily': false, 
-                        'tasks': tasks, 
-                         prizes
 
-                         })
-                      })
->>>>>>> master
                 })
             },
-
-
             getUserInfo: function (id, uid) {
                 return $firebaseObject(refDatabase.child('campaigns').child(id).child("users").child(uid))
             },
