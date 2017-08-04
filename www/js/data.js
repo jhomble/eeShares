@@ -90,7 +90,8 @@ angular.module('data', ['firebase'])
                          user.$add({
                         'score': 0,
                         'daily': false, 
-                        'tasks': tasks, 
+                        'tasks': tasks,
+                        'userID': userID,
                          prizes
 
                          })
@@ -105,6 +106,7 @@ angular.module('data', ['firebase'])
             getUserList: function(id){
                 return $firebaseArray(refDatabase.child('campaigns').child(id).child('users'));
             }, 
+            //FIX this functin, update is not a fire base function - MB
             setDaily: function(id, uid, score){
                 var userRef = refDatabase.child('campaigns').child(id).child("users").child(uid).update({
                     'score': score,
@@ -162,11 +164,19 @@ angular.module('data', ['firebase'])
             getCampaignUserScore: function(id,uid){
                 return $firebaseObject(refDatabase.child('campaigns').child(id).child("users").child(uid).child("score"))
             },
-            savePrizes: function(id, uid, prizes){
-                var prize = $firebaseArray(refDatabase.child('campaigns').child(id).child("users").child(uid).child('prizes'))
-                .$save({
-                    prizes
-                })
+            savePrizes: function(id, uid, prizes, prizeList){
+
+                var fbPrize = $firebaseObject(refDatabase.child('campaigns').child(id).child("users").child(uid));
+                fbPrize.$loaded().then(function() {
+                		var tempScore = fbPrize.score;
+	                	fbPrize.score = tempScore - prizes;
+	                	fbPrize.prizes = prizeList;
+	                	fbPrize.$save().then(function(ref) {
+						  ref.key() === fbPrize.$id; // true
+						})
+						console.log("UPDATE?: ", fbPrize.score);
+				});
+
             },
             getPictures: function(campaignID){
                 return $firebaseArray(refDatabase.child('campaigns').child(campaignID).child('pictures'))

@@ -118,7 +118,7 @@ angular.module('app.routes', [])
     url: '/cambridgePrize',
 	params: {
     campaignID: "-KV25NS7A1hb7QlDd8LD",
-    userID: "-KkwjhORRlCEBJwq_Xg1"	
+    userID: ""	
 },
     views: {
       'tab2': {

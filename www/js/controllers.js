@@ -597,7 +597,7 @@ function ($scope, $stateParams, buildingService, campaignService, $ionicModal, $
         $scope.joinData.key = '';
         $scope.modal.hide();
     }
-
+//FIXED - allows same user to join same campaign - MB
     // Join the campaign 
     $scope.join = function(){
         if($scope.key.toString() === $scope.joinData.key.toString()){
@@ -1155,9 +1155,22 @@ function ($scope, $stateParams, buildingService, campaignService, userService, $
     $scope.$on("$ionicView.beforeEnter", function(event, data){
         // Get the ID for the campaign, and the user
         $scope.campaignID = $stateParams.campaignID;
-        $scope.userID = $stateParams.userID;
+        //STRANGE BUG - if userID is set to actual id and not campaign id then tasks widget shows up - MB
+        $scope.userID = "";
+
+        $scope.usersFB = campaignService.getUserList($scope.campaignID);
+            // Check what key of user is in campaign user list 
+            $scope.usersFB.$loaded()
+            .then(function(){
+            angular.forEach($scope.usersFB, function(member) {
+                    if(member.userID === firebase.auth().currentUser.uid){
+                        $scope.userID = member.$id;
+                    }
+                })
+        }).then(function() { 
+
         // Get the campaigns info on the user
-        $scope.campaignUser = campaignService.getCampaignUser($scope.campaignID, $scope.userID)
+        $scope.campaignUser = campaignService.getCampaignUser($scope.campaignID, $scope.userID);
         // Array of the points for each prize - firebase alphabetizes them so it should match campaign ordering
         var userPoints = [];
         $scope.campaignUser.$loaded()
@@ -1171,7 +1184,8 @@ function ($scope, $stateParams, buildingService, campaignService, userService, $
             userPoints.pop()
             userPoints.pop()
         })
-            console.log("ID: ", $scope.campaignID, $scope.userID);
+            console.log("ID: ", $scope.campaignID);
+            console.log("UID: ", $scope.userID);
             var test = campaignService.getCampaignUserScore($scope.campaignID, $scope.userID);
             test.$loaded().then(function() {
                 $scope.score = test.$value;
@@ -1204,6 +1218,8 @@ function ($scope, $stateParams, buildingService, campaignService, userService, $
         })      
     })
 
+        });
+
     $scope.save = function(){
         var total = 0;
         var prizeArray = []
@@ -1234,8 +1250,9 @@ function ($scope, $stateParams, buildingService, campaignService, userService, $
         } 
         // All went well, saving back to firebase
         else {
-            console.log(prizeArray)
-            campaignService.savePrizes($scope.campaignID, $scope.userID, prizeArray)
+            console.log(total)
+            console.log("LOOK: ", prizeArray)
+            campaignService.savePrizes($scope.campaignID, $scope.userID, total, prizeArray)
             var alertPopup = $ionicPopup.alert({
                 title: 'Saved!',
                 template: 'Your points have been saved!'
