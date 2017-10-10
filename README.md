@@ -1,6 +1,6 @@
 # eeShares
 
-Contact: Julien Homble : jhomble7@gmail.com
+Contact: Manan Bhalodia : mananbhalodia@gmail.com
 Link to proposal: https://github.com/jhomble/eeShares/blob/master/EeShares%20Project.docx
 ## What is it
 EeShares stands for Energy Efficiency Sharing
